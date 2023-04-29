@@ -1,34 +1,18 @@
-pipeline{
-    agent any
-    tools{
-        maven 'maven-3.8.4'
+/* groovylint-disable-next-line CompileStatic */
+pipeline {
+    agent 'any'
+    tools {
+        maven 'MAVEN3'
     }
-    stages{
-        stage('checkout the code'){
-            steps{
-                git url:'https://github.com/bcreddydevops/springboot-maven-course-micro-svc.git', branch: 'master'
+    stages {
+        stage('checkout the code') {
+            steps {
+                git 'https://github.com/EziamaUgonna/simple_application.git'
             }
         }
-        stage('build the code'){
-            steps{
+        stage('Build the code') {
+            steps {
                 sh 'mvn clean package'
-            }
-        }
-        stage("sonar quality check"){
-            steps{
-                script{
-                    withSonarQubeEnv(installationName: 'sonarqube-9', credentialsId: 'jenkins-sonar-token') {
-                            sh 'mvn sonar:sonar '
-                    }
-
-                    timeout(time: 1, unit: 'HOURS') {
-                      def qg = waitForQualityGate()
-                      if (qg.status != 'OK') {
-                           error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                      }
-                    }
-
-                }  
             }
         }
     }
