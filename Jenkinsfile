@@ -1,3 +1,4 @@
+/* groovylint-disable-next-line CompileStatic */
 pipeline{
     environment {
     account = "${environment}" 
@@ -33,7 +34,7 @@ pipeline{
                    sh 'mvn clean package'
                 }
             }
-		stage('Generate kubeconfig for the cluster') {
+        stage('Generate kubeconfig for the cluster') {
         steps {
         script {
             env.KUBECONFIG = "${artifacts_dir}/${eks_cluster_name}-kubeconfig"
@@ -55,8 +56,8 @@ pipeline{
     }
         }
     post {
-	    cleanup {
-	          cleanWs(cleanWhenFailure: false)
-	    }
+        cleanup {
+              cleanWs(cleanWhenFailure: false)
+        }
     }
 }
