@@ -1,11 +1,15 @@
 /* groovylint-disable-next-line CompileStatic */
 pipeline {
-    agent 'any'
+    agent any
     tools {
         maven 'MAVEN3'
     }
+    environment {
+        registry = "your-ecr-registry-url"
+        registryCredential = "your-ecr-credential-id"
+    }
     stages {
-        stage('checkout the code') {
+        stage('Checkout the code') {
             steps {
                 git 'https://github.com/EziamaUgonna/simple_application.git'
             }
@@ -15,48 +19,36 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        stage('sonar quality check') {
+        stage('Sonar quality check') {
             steps {
                 script {
-                    /* groovylint-disable-next-line NestedBlockDepth */
-                    withSonarQubeEnv(credentialsId: 'sonar_token') 
-                   /* groovylint-disable-next-line NestedBlockDepth */
-                   {
-                            sh 'mvn sonar:sonar '
-                   }
-
-                    /* groovylint-disable-next-line NestedBlockDepth */
+                    withSonarQubeEnv(credentialsId: 'sonar_token') {
+                        sh 'mvn sonar:sonar '
+                    }
                     timeout(time: 1, unit: 'HOURS') {
-                        /* groovylint-disable-next-line NoDef, VariableTypeRequired */
                         def qg = waitForQualityGate()
-                        /* groovylint-disable-next-line NestedBlockDepth */
                         if (qg.status != 'OK') {
                             error "Pipeline aborted due to quality gate failure: ${qg.status}"
                         }
                     }
-
-                }  
+                }
             }
         }
-            stage('Building image') {
-                steps {
-                    script {
-                        dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        stage('Building image') {
+            steps {
+                script {
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
+            }
+        }
+        stage('Deploy image') {
+            steps {
+                script {
+                    docker.withRegistry("https://${registry}", "ecr:us-east-1:${registryCredential}") {
+                        dockerImage.push()
                     }
                 }
-            
-            }
-
-        stage('Deploy image') {
-            steps{
-                script{
-                    docker.withRegistry("https://"+registry,"ecr:us-east-1:"+registryCredential) {
-                    dockerImage.push()
-                }
             }
         }
-
     }
 }
-    
-
