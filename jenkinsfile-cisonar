@@ -15,5 +15,30 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
+        stage('sonar quality check') {
+            steps {
+                script {
+                    /* groovylint-disable-next-line NestedBlockDepth */
+                    withSonarQubeEnv(credentialsId: 'sonar_token') 
+                   /* groovylint-disable-next-line NestedBlockDepth */
+                   {
+                            sh 'mvn sonar:sonar '
+                   }
+
+                    /* groovylint-disable-next-line NestedBlockDepth */
+                    timeout(time: 1, unit: 'HOURS') {
+                        /* groovylint-disable-next-line NoDef, VariableTypeRequired */
+                        def qg = waitForQualityGate()
+                        /* groovylint-disable-next-line NestedBlockDepth */
+                        if (qg.status != 'OK') {
+                           error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+
+                }  
+            }
+        }
     }
 }
+    
+
