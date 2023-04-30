@@ -22,6 +22,7 @@ pipeline {
         stage('sonar quality check') {
             steps {
                 script {
+                    /* groovylint-disable-next-line NestedBlockDepth */
                     withSonarQubeEnv(credentialsId: 'sonarserver')  {
                         sh 'mvn sonar:sonar '
                     }
