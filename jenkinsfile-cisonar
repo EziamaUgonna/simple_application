@@ -3,7 +3,7 @@ pipeline {
     tools {
         maven 'MAVEN3'
         jdk 'Oraclejdk'
-        }
+    }
     environment {
         registry = '660039689938.dkr.ecr.us-east-1.amazonaws.com/myrepo'
         registryCredential = 'jenkins-iam-ecr'
@@ -34,7 +34,6 @@ pipeline {
                             error "Pipeline aborted due to quality gate failure: ${qg.status}"
                         }
                     }
-
                 }
             }
         }
@@ -55,11 +54,12 @@ pipeline {
             }
         }
         post {
-        success {
+            success {
             mail bcc: '', body: 'Pipeline finsihed successfully', cc: '', from: 'elvindavin@gmail.com', replyTo: '', subject: 'The Pipeline success', to: 'bcreddydevops@gmail.com'
-        }
-        failure {  
-            mail bcc: '', body: 'Pipeline failed', cc: '', from: 'elvindavins@gmail.com', replyTo: '', subject: 'The Pipeline failed', to: 'bcreddydevops@gmail.com'
-         } 
+            }
+            failure {  
+                mail bcc: '', body: 'Pipeline failed', cc: '', from: 'elvindavins@gmail.com', replyTo: '', subject: 'The Pipeline failed', to: 'bcreddydevops@gmail.com'
+            } 
+        }   
     }
 }
