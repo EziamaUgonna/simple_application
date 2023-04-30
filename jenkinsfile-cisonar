@@ -1,20 +1,56 @@
-/* groovylint-disable-next-line CompileStatic */
 pipeline {
-    agent 'any'
+    agent any
     tools {
-        maven 'MAVEN3'
+        maven 'maven-3.8.4'
+    }
+    environment {
+        registry = '137827796096.dkr.ecr.us-east-1.amazonaws.com/myrepo'
+        registryCredential = 'jenkins-ecr-credentials'
+        dockerImage = ''
     }
     stages {
         stage('checkout the code') {
             steps {
-                git 'https://github.com/EziamaUgonna/simple_application.git'
+                git url:'https://github.com/bcreddydevops/springboot-maven-course-micro-svc.git', branch: 'master'
             }
         }
-        stage('Build the code') {
+        stage('build the code') {
             steps {
                 sh 'mvn clean package'
             }
         }
-        
+        stage('sonar quality check') {
+            steps {
+                script {
+                    withSonarQubeEnv(credentialsId: 'sonar_token')  {
+                        sh 'mvn sonar:sonar '
+                    }
+
+                    timeout(time: 1, unit: 'HOURS') {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+
+                }
+            }
+        }
+        stage('Building image') {
+            steps {
+                script {
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
+            }
+        }
+        stage('Deploy image') {
+            steps {
+                script {
+                    docker.withRegistry('https://'+registry,'ecr:us-east-1:'+registryCredential) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
     }
 }
