@@ -5,7 +5,7 @@ pipeline {
         jdk 'java8'
     }
     environment {
-        registry = '137827796096.dkr.ecr.us-east-1.amazonaws.com/myrepo'
+        registry = '660039689938.dkr.ecr.us-east-1.amazonaws.com/myrepo'
         registryCredential = 'jenkins-ecr-credentials'
         dockerImage = ''
     }
