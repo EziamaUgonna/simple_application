@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('checkout the code') {
             steps {
-                git url:'https://github.com/bcreddydevops/springboot-maven-course-micro-svc.git', branch: 'master'
+                git 'https://github.com/EziamaUgonna/simple_application.git'
             }
         }
         stage('build the code') {
