@@ -57,10 +57,10 @@ pipeline {
     }
     post {
         success {
-            mail bcc: '', body: 'Pipeline finsihed successfully', cc: '', from: 'elvindavin@gmail.com', replyTo: '', subject: 'The Pipeline success', to: 'bcreddydevops@gmail.com'
+            mail bcc: '', body: 'Pipeline finsihed successfully', cc: '', from: 'elvindavin@gmail.com', replyTo: '', subject: 'The Pipeline success', to: 'elvindavin@gmail.com'
         }
         failure {  
-            mail bcc: '', body: 'Pipeline failed', cc: '', from: 'elvindavins@gmail.com', replyTo: '', subject: 'The Pipeline failed', to: 'bcreddydevops@gmail.com'
+            mail bcc: '', body: 'Pipeline failed', cc: '', from: 'elvindavins@gmail.com', replyTo: '', subject: 'The Pipeline failed', to: 'elvindavin@gmail.com'
         }
     }
 }
