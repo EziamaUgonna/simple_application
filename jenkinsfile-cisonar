@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         maven 'MAVEN3'
-        jdk 'java8'
+        jdk 'Oraclejdk'
         }
     environment {
         registry = '660039689938.dkr.ecr.us-east-1.amazonaws.com/myrepo'
