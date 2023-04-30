@@ -53,11 +53,7 @@ pipeline {
                 }
             }
         }
-        stage('dummy stage') {
-            steps {
-                // do nothing
-            }
-        }
+        
     }
     post {
         success {
@@ -65,6 +61,6 @@ pipeline {
         }
         failure {  
             mail bcc: '', body: 'Pipeline failed', cc: '', from: 'elvindavins@gmail.com', replyTo: '', subject: 'The Pipeline failed', to: 'bcreddydevops@gmail.com'
-        } 
-    }   
+        }
+    }
 }
